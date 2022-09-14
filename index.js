@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
 
@@ -6,6 +8,6 @@ app.get('/', (req, res) => {
 
 })
 
-app.listen(4000, () => {
-    console.log("Backend en ejecución")
-})
+app.listen(process.env.PORT, () => {
+    console.log("Backend en ejecución",process.env.PORT)
+})  
