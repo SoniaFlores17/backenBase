@@ -1,5 +1,5 @@
 const express = require('express')
-const messagesRouter = require('./routes/messages')
+const messagesRouter = require('./routes/messager')
 
 class Server {
     constructor(){
