@@ -1,5 +1,6 @@
 const express = require('express')
 const messagesRouter = require('./routes/messager')
+const cors = require("cors")
 
 class Server {
     constructor(){
@@ -7,7 +8,9 @@ class Server {
         this.paths = {
             messages: "/api/v1/messages"
         }
+        this.middlerwares()
         this.routes()
+        
     }
 
     routes() {
@@ -16,6 +19,13 @@ class Server {
         //  }) //end point
       this.app.use(this.paths.messages, messagesRouter)
     }
+
+    middlerwares(){
+        this.app.use(cors())  //Permite solicitudes de origen cruzado
+        this.app.use(express.json()) // habilita la lectura de contenido en forma JSON
+    }
+
+
 
     listen(){
         this.app.listen(process.env.PORT, () => {
