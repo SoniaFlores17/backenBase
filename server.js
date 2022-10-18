@@ -6,7 +6,7 @@ const cors = require("cors")
 class Server {
     constructor(){
         this.app = express()
-        this.paths = {
+        this.paths  = {
             messages: "/api/v1/messages",
             usuarios: "/api/v1/usuarios"
         }
