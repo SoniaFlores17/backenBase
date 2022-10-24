@@ -56,5 +56,30 @@ const getUsers = async (req=request, res= response)=>{
     }
     
 
+    const deleteUserByID= async (req=request, res= response)=>{
+        const {id}= req.query
+        let conn;
 
-module.exports = {getUsers, getUserByID}
+        try{
+            conn=await pool.getConnection()
+    
+            const {affectedRews} =await conn.query(`UPDATE Usuarios SET Activo = 'N'  WHERE ID = ${id}`,(error)=>{throw new Error(error)})
+            //console.log(userDeleted)
+         if(affectedRews === 0){
+               res.status(404).json({msg:`No existe  el registros con el ID ${id}`})
+              return
+
+            }
+            res.json({msg: `El usuario con ID ${id} no se encontro o elimino satisfactoriamente.`})
+        }catch(error){
+            console.log(error)
+            res.status(500).json({error})
+        }finally{
+            if(conn){
+                conn.end()
+    
+            }
+        }
+    
+    }
+module.exports = {getUsers, getUserByID, deleteUserByID}
