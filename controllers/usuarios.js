@@ -82,4 +82,77 @@ const getUsers = async (req=request, res= response)=>{
         }
     
     }
-module.exports = {getUsers, getUserByID, deleteUserByID}
+
+
+    const ddUser = async (req=request, res= response)=>{
+        const{
+            Usuario, 
+            Nombre,
+            Apellidos,
+            Edad,
+            Genero, 
+            Contrasena, 
+            Fecha_Nacimiento,
+            Activo
+
+        }= req.body
+
+        if (
+            !Usuario ||
+            !Nombre ||
+            !Apellidos ||
+            !Edad ||
+            !Contrasena ||
+            !Activo 
+        ) {
+            res.status(400).json({msg: "Falta información del usuario"})
+            return
+        }
+        let conn;
+
+        try{
+            conn=await pool.getConnection()
+    
+            const {affectedRows} =await conn.query(`
+                INSERT INTO usuarios(
+                    Usuario, 
+                    Nombre,
+                    Apellidos,
+                    Edad,
+                    Genero, 
+                    Contrasena, 
+                    Fecha_Nacimiento,
+                    Activo
+                ) VALUES (
+                    '${Usuario}',
+                    '${Nombre}',
+                    '${Apellidos}',
+                    '${Edad}',
+                    '${Genero}',
+                    '${Contrasena}', 
+                    '${Fecha_Nacimiento}',
+                    '${Activo}'
+                )
+            `,(error)=>{throw new error})
+
+
+
+            //console.log(userDeleted)
+         if(affectedRows === 0){
+               res.status(404).json({msg:`No se pudo agregar el registro del usuario  ${Usuario}`})
+              return
+
+            }
+            res.json({msg: `El usuario con ID ${Usuario} se agregó satisfactoriamente.`})
+        }catch(error){
+            console.log(error)
+            res.status(500).json({error})
+        }finally{
+            if(conn){
+                conn.end()
+    
+            }
+        }
+    
+    }
+module.exports = {getUsers, getUserByID, deleteUserByID, ddUser}
