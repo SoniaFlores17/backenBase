@@ -1,4 +1,5 @@
 const { request, response } = require("express");
+const bcryptjs = require("bcryptjs")
 const pool=require("../db/connection");
 
 //const { connect } = require("../routes/messager");
@@ -119,6 +120,9 @@ const getUsers = async (req=request, res= response)=>{
                 res.status(403).json({msg: `El usuario ${Usuario} ya se encuentra registrado.`})
                 return
             }
+
+            const salt = bcryptjs.genSaltSync()
+            const ContrasenaCifrada = bcryptjs.hashSync(Contrasena, salt)
     
             const {affectedRows} =await conn.query(`
                 INSERT INTO usuarios(
@@ -136,7 +140,7 @@ const getUsers = async (req=request, res= response)=>{
                     '${Apellidos}',
                     '${Edad}',
                     '${Genero || ' '}',
-                    '${Contrasena}', 
+                    '${ContrasenaCifrada}', 
                     '${Fecha_Nacimiento}',
                     '${Activo}'
                 )
