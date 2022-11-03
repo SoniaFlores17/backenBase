@@ -256,7 +256,7 @@ const getUsers = async (req=request, res= response)=>{
         try{
             conn=await pool.getConnection()
 
-            const [user] = await conn.query(`SELECT Usuario, Contrasena FROM Usuarios WHERE Usuario = '${Usuario}'`)
+            const [user] = await conn.query(`SELECT Usuario, Contrasena, Activo FROM Usuarios WHERE Usuario = '${Usuario}'`)
 
             if (!user || user.Activo == 'N') {
                 let code = !user ? 1 : 2;
@@ -285,7 +285,75 @@ const getUsers = async (req=request, res= response)=>{
         }
     
     }
+
+    const NuevaContrasena = async (req=request, res= response)=>{
+        const{
+            Usuario, 
+            Contrasena,
+            ContrasenaNueva
+
+        }= req.body
+
+        if (
+            !Usuario ||
+            !Contrasena ||                                                          
+            !ContrasenaNueva
+        ) {
+            res.status(400).json({msg: "Falta información del usuario"})
+            return
+        }
+        let conn;
+
+        try{
+            conn=await pool.getConnection()
+
+            const [user] = await conn.query(`SELECT Usuario, Contrasena FROM Usuarios WHERE Usuario = '${Usuario}'`)
+
+            
+            if (!user) {
+                res.status(403).json({msg: `El usuario '${Usuario}' no se encuentra registrado.`})
+                return
+            }
+
+            const accesoValido = bcryptjs.compareSync(Contrasena, user.Contrasena)
+
+            if (!accesoValido){
+                res.status(403).json({msg: `El usuario o la contraseña son incorrectos.`})
+                return
+            }
+
+            if (Contrasena===ContrasenaNueva){
+                res.status(403).json({msg: ` Ingresa una nueva contraseña segura.`})
+                return
+            }
+             
+            const salt =bcryptjs.genSaltSync()
+            const ContrasenaCifrada = bcryptjs.hashSync(ContrasenaNueva, salt)
+            const {affectedRows} = await conn.query(`UPDATE usuarios SET Contrasena = '${ContrasenaCifrada}'
+                                    WHERE  Usuario = '${Usuario}'`, (error)=>{throw new error})
+
+            if (affectedRows===0){
+                res.status(404).json({msg: `No se aguardaron los cambios`})
+                return
+            }
+
+            res.json({msg: `La contraseña se actualizó correctamente`})
+    
+           
+        }catch(error){
+            console.log(error)
+            res.status(500).json({error})
+        }finally{
+            if(conn){
+                conn.end()
+    
+            }
+        }
+    
+    }
+    
  
-module.exports = {getUsers, getUserByID, deleteUserByID, ddUser, updateUserByUsuario, signIn}
+module.exports = {getUsers, getUserByID, deleteUserByID, ddUser, updateUserByUsuario, signIn, NuevaContrasena}
 
 //Genero ? chalala : nochalala
+
