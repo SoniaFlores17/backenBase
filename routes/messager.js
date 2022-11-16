@@ -4,7 +4,7 @@ const{rootMessage, hiMessage, byeMessage, postMessage, putMessage, deleteMessage
 
 router.get('/', rootMessage) //end point
 //router.get('/hi', hiMessage) //end point
-router.get('/hi/:aname', hiMessage)
+router.get('/hi/:name', hiMessage)
 router.get('/bye', byeMessage)//end point
 
 router.post('/', postMessage)
