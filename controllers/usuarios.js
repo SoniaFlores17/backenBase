@@ -1,7 +1,7 @@
 const { request, response } = require("express");
 const bcryptjs = require("bcryptjs")
 const pool=require("../db/connection");
-const modeloUsuarios = require("../models/usuarios");
+const {modeloUsuarios, updateUsuario} = require("../models/usuarios");
 
 //const { connect } = require("../routes/messager");
 const getUsers = async (req=request, res= response)=>{

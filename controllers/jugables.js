@@ -54,7 +54,7 @@ const getJugables = async (req=request, res= response)=>{
         }
     
     }
-    
+1    
 
     const deleteJugablesByID= async (req=request, res= response)=>{
         const {id}= req.query

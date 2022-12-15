@@ -1,47 +1,68 @@
-const { NuevaContrasena } = require("../controllers/jugables");
-
 const modeloUsuarios = {
-    queryGetUsers: "SELECT * FROM Usuarios",
-    queryGetUserByID: `SELECT * FROM Usuarios WHERE ID = ?`,
-    queryDeleteUserByID: `UPDATE Usuarios SET Activo = 'N'  WHERE ID = ?`,
-    queryUserExists: `SELECT Usuario FROM Usuarios WHERE Usuario = '?'`,
+    queryGetUsers:"SELECT * FROM usuarios",
+    queryGetUserByID: `SELECT * FROM usuarios WHERE ID = ?`,
+    queryDeleteUserByID: `UPDATE usuarios SET Activo='N' WHERE ID = ?`,
+    queryUserExists: `SELECT Usuario FROM usuarios WHERE Usuario = ?`,
     queryAddUser: `
-    INSERT INTO usuarios(
-        Usuario, 
+    INSERT INTO usuarios (
+        Usuario,
         Nombre,
         Apellidos,
         Edad,
-        Genero, 
-        Contrasena, 
+        Genero,
+        Contrasena,
         Fecha_Nacimiento,
         Activo
-        ) VALUES (
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-        )`,
-    queryGetuserInfo:
-    `SELECT Usuario, Nombre, Apellidos, Edad, Genero, Fecha_Nacimiento
-             FROM Usuarios WHERE Usuario = '?'`,
-    queryUpdateByUsuario:`
-                UPDATE Usuarios SET
-                    Nombre ='?',
-                    Apellidos = '?',
-                    Edad = '?',
-                    Genero = '?', 
-                    Fecha_Nacimiento = '?'
-                WHERE Usuario = '?' `,
-    querySignin: `SELECT Usuario, Contrasena, Activo FROM Usuarios WHERE Usuario = '?`,
-    NuevaContrasena: `
+    ) VALUES (
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?
+    )
+    `,
+    queryGetUserInfo: `
+    SELECT Usuario, Nombre, Apellidos, Edad, Genero, Fecha_Nacimiento 
+    FROM usuarios 
+    WHERE Usuario = ?
+    `,
+    queryUpdateByUsuario: `
+    UPDATE usuarios SET
+        Nombre = ?,
+        Apellidos = ?,
+        Edad = ?,
+        Genero = ?,
+        Fecha_Nacimiento = ?
+    WHERE Usuario = ?
+    `,
+    querySignIn: `SELECT Usuario, Contrasena, Activo FROM usuarios WHERE Usuario = ?`,
+    queryUpdatePassword: `
     UPDATE usuarios SET
         Contrasena = ?
-        WHERE Usuario = ?
-        `
+    WHERE Usuario = ?
+    ` 
 }
 
-module.exports = modeloUsuarios
+const updateUsuario = (
+    Nombre,
+    Apellidos,
+    Edad,
+    Genero,
+    Fecha_Nacimiento,
+    Usuario
+) => {
+    return `
+        UPDATE usuarios SET
+            Nombre = '${Nombre}',
+            Apellidos = '${Apellidos}',
+            Edad = ${Edad},
+            ${Genero  ? `Genero = '${Genero}',`: ''}
+            Fecha_Nacimiento = '${Fecha_Nacimiento}'
+        WHERE Usuario = '${Usuario}'
+    `
+}
+
+module.exports = {modeloUsuarios, updateUsuario}
